@@ -11,26 +11,6 @@ class UtilityTest extends TestCase
     /**
      * @test
      */
-    public function getClassNameWithoutNamespaceReturnsCorrectResultWithGivenNamespacedClass(): void
-    {
-        $actual = Utility::getClassNameWithoutNamespace('\\This\\Is\\The\\Namespace\\ClassName');
-
-        self::assertSame('ClassName', $actual);
-    }
-
-    /**
-     * @test
-     */
-    public function getClassNameWithoutNamespaceReturnsCorrectResultWithNoNamespacedClass(): void
-    {
-        $actual = Utility::getClassNameWithoutNamespace('ClassName');
-
-        self::assertSame('ClassName', $actual);
-    }
-
-    /**
-     * @test
-     */
     public function getNamespacedClassNameForType(): void
     {
         $actual = Utility::getNamespacedClassNameForType('Thing');

@@ -15,21 +15,6 @@ final class Utility
     private static $typeNamespace = 'Brotkrueml\\Schema\\Model\\Type';
 
     /**
-     * Get the class name without the namespace
-     *
-     * @param string $className Class name with namespace
-     * @return string
-     * @internal
-     */
-    public static function getClassNameWithoutNamespace(string $className): string
-    {
-        $classNameParts = \explode('\\', $className);
-        $classNameWithoutNamespace = \end($classNameParts);
-
-        return $classNameWithoutNamespace === false ? '' : $classNameWithoutNamespace;
-    }
-
-    /**
      * Get the class name with namespace for a given type
      *
      * Returns null, if the class does not exist

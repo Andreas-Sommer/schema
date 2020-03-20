@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Brotkrueml\Schema\Tests\Unit\ViewHelpers\Type;
 
+use Brotkrueml\Schema\Tests\Fixtures\ViewHelpers\Type\TypeModelNotSetViewHelper;
 use Brotkrueml\Schema\Tests\Helper\SchemaCacheTrait;
 use Brotkrueml\Schema\Tests\Unit\ViewHelpers\ViewHelperTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -267,16 +268,19 @@ class ThingViewHelperTest extends ViewHelperTestCase
         yield 'Invalid specific type' => [
             '<schema:type.thing -specificType="TypeDoesNotExist"/>',
             1561829970,
+            'The given specific type "TypeDoesNotExist" does not exist in the schema.org vocabulary, perhaps it is misspelled? Remember, the type must start with a capital letter.',
         ];
 
         yield 'Missing -as attribute' => [
             '<schema:type.thing><schema:type.creativeWork/></schema:type.thing>',
             1561829951,
+            'The child view helper of schema type "CreativeWork" must have an "-as" argument for embedding into the parent type',
         ];
 
         yield 'With -isMainEntityOfWebPage attribute assigned to child' => [
             '<schema:type.thing><schema:type.creativeWork -as="name" -isMainEntityOfWebPage="1"/></schema:type.thing>',
             1562517051,
+            'The argument "-isMainEntityOfWebPage" must not be used in the child type "CreativeWork", only the main type is allowed',
         ];
     }
 
@@ -286,12 +290,29 @@ class ThingViewHelperTest extends ViewHelperTestCase
      *
      * @param string $template The Fluid template
      * @param int $expectedExceptionCode The expected exception code
+     * @param string $expectedExceptionMessage The expected exception message
      */
-    public function itThrowsExceptionWhenViewHelperIsUsedIncorrectly(string $template, int $expectedExceptionCode): void
-    {
+    public function itThrowsExceptionWhenViewHelperIsUsedIncorrectly(
+        string $template,
+        int $expectedExceptionCode,
+        string $expectedExceptionMessage
+    ): void {
         $this->expectException(ViewHelper\Exception::class);
         $this->expectExceptionCode($expectedExceptionCode);
+        $this->expectExceptionMessage($expectedExceptionMessage);
 
         $this->renderTemplate($template);
+    }
+
+    /**
+     * @test
+     */
+    public function itThrowsExceptionWhenTypeModelIsNotDefined(): void
+    {
+        $this->expectException(ViewHelper\Exception::class);
+        $this->expectExceptionCode(1584715529);
+        $this->expectExceptionMessage('Brotkrueml\\Schema\\Core\\ViewHelpers\\AbstractTypeViewHelper::$typeModel must be set to the appropriate type model class');
+
+        new TypeModelNotSetViewHelper();
     }
 }

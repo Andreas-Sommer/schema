@@ -13,7 +13,6 @@ namespace Brotkrueml\Schema\Core\ViewHelpers;
 use Brotkrueml\Schema\Core\Model\AbstractType;
 use Brotkrueml\Schema\Core\TypeStack;
 use Brotkrueml\Schema\Manager\SchemaManager;
-use Brotkrueml\Schema\Utility\Utility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper;
 
@@ -23,6 +22,8 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
     protected const ARGUMENT_ID = '-id';
     protected const ARGUMENT_IS_MAIN_ENTITY_OF_WEBPAGE = '-isMainEntityOfWebPage';
     protected const ARGUMENT_SPECIFIC_TYPE = '-specificType';
+
+    protected static $typeModel = '';
 
     protected $item = [];
 
@@ -39,6 +40,16 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
 
     public function __construct(TypeStack $typeStack = null, SchemaManager $schemaManager = null)
     {
+        if (empty(static::$typeModel)) {
+            throw new ViewHelper\Exception(
+                \sprintf(
+                    '%s::$typeModel must be set to the appropriate type model class',
+                    __CLASS__
+                ),
+                1584715529
+            );
+        }
+
         $this->stack = $typeStack ?: GeneralUtility::makeInstance(TypeStack::class);
         $this->schemaManager = $schemaManager ?: GeneralUtility::makeInstance(SchemaManager::class);
     }
@@ -52,7 +63,7 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
         $this->registerArgument(static::ARGUMENT_IS_MAIN_ENTITY_OF_WEBPAGE, 'bool', 'Set to true, if the type is the primary content of the web page', false, false);
         $this->registerArgument(static::ARGUMENT_SPECIFIC_TYPE, 'string', 'A specific type of the chosen type. Only the properties of the chosen type are valid');
 
-        $modelClassName = Utility::getNamespacedClassNameForType($this->getType());
+        $modelClassName = static::$typeModel;
         /** @var AbstractType $model */
         $model = new $modelClassName();
         foreach ($model->getPropertyNames() as $property) {
@@ -123,7 +134,7 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
             if (empty($parentPropertyNameFromArgument)) {
                 throw new ViewHelper\Exception(
                     \sprintf(
-                        'The child view helper of schema type "%s" must have an "%s" attribute for embedding into the parent type',
+                        'The child view helper of schema type "%s" must have an "%s" argument for embedding into the parent type',
                         $this->getType(),
                         static::ARGUMENT_AS
                     ),
@@ -157,16 +168,19 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
 
     protected function getType(): string
     {
-        if (!empty($this->specificType)) {
-            return $this->specificType;
-        }
+        $classNameParts = \explode('\\', static::class);
 
-        return \str_replace('ViewHelper', '', Utility::getClassNameWithoutNamespace(static::class));
+        return \str_replace('ViewHelper', '', \end($classNameParts));
     }
 
     protected function assignArgumentsToItem(): void
     {
-        $modelClassName = Utility::getNamespacedClassNameForType($this->getType());
+        $modelClassName = static::$typeModel;
+        if ($this->specificType) {
+            // @todo The fixed namespace here is temporary, later there can be models from different namespaces
+            // @see Feature #38 (Possibility to register additional schema types)
+            $modelClassName = '\\Brotkrueml\\Schema\\Model\\Type\\' . $this->specificType;
+        }
 
         /** @var AbstractType $model */
         $model = new $modelClassName();

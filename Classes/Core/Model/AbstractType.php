@@ -12,7 +12,6 @@ namespace Brotkrueml\Schema\Core\Model;
 
 use Brotkrueml\Schema\Event\RegisterAdditionalTypePropertiesEvent;
 use Brotkrueml\Schema\Model\DataType\Boolean;
-use Brotkrueml\Schema\Utility\Utility;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
@@ -138,7 +137,7 @@ abstract class AbstractType
     {
         if (!\array_key_exists($propertyName, $this->properties)) {
             throw new \DomainException(
-                sprintf('Property "%s" is unknown for type "%s"', $propertyName, $this->getType()),
+                \sprintf('Property "%s" is unknown for type "%s"', $propertyName, $this->getType()),
                 1561829996
             );
         }
@@ -309,7 +308,9 @@ abstract class AbstractType
 
     private function getType(): string
     {
-        return Utility::getClassNameWithoutNamespace(static::class);
+        $classNameParts = \explode('\\', static::class);
+
+        return \end($classNameParts);
     }
 
     /**

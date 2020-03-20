@@ -58,8 +58,6 @@ class Generator
 
     protected $properties = [];
 
-    protected $availableTypeTraits = [];
-
     public function __construct(Configuration $configuration, Environment $twig)
     {
         $this->configuration = $configuration;
@@ -213,7 +211,7 @@ class Generator
             'ViewHelper.php.twig',
             [
                 'comment' => $comment,
-                'className' => $label . 'ViewHelper',
+                'type' => $label,
             ]
         );
 
