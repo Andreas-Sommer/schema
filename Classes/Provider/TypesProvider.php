@@ -10,624 +10,102 @@ namespace Brotkrueml\Schema\Provider;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Brotkrueml\Schema\Core\Model\WebPageElementTypeInterface;
+use Brotkrueml\Schema\Core\Model\WebPageTypeInterface;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\Package\PackageManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
- * Provide names of all types or a subset of them
+ * Provide names of all available types or a subset of them
  *
- * The lists of types are generated out of the official schema definition
+ * The lists of types are generated from the official schema definition
+ * or added in extensions via Configuration/TxSchema/TypeModels.php
  *
  * @api
  */
 final class TypesProvider
 {
+    private const CACHE_IDENTIFIER = 'tx_schema_core';
+    private const CACHE_ENTRY_IDENTIFIER_TYPES = 'types';
+    private const CACHE_ENTRY_IDENTIFIER_WEBPAGE_TYPES = 'webpage_types';
+    private const CACHE_ENTRY_IDENTIFIER_WEBPAGEELEMENT_TYPES = 'webpageelement_types';
+
+    private static $types = [];
+    private static $webPageTypes = [];
+    private static $webPageElementTypes = [];
+
+    /** @var FrontendInterface */
+    private $cache;
+
+    /** @var PackageManager */
+    private $packageManager;
+
+    /**
+     * @param CacheManager|null $cacheManager For test purposes
+     * @param PackageManager|null $packageManager For test purposes
+     * @throws \TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException
+     */
+    public function __construct(CacheManager $cacheManager = null, PackageManager $packageManager = null)
+    {
+        $cacheManager = $cacheManager ?? GeneralUtility::makeInstance(CacheManager::class);
+
+        $this->cache = $cacheManager->getCache(static::CACHE_IDENTIFIER);
+        $this->packageManager = $packageManager ?? GeneralUtility::makeInstance(PackageManager::class);
+    }
+
     /**
      * Get all available types
-     * @see https://schema.org/docs/full.html
      */
     public function getTypes(): array
     {
-        return [
-            'AMRadioChannel',
-            'APIReference',
-            'AboutPage',
-            'AcceptAction',
-            'Accommodation',
-            'AccountingService',
-            'AchieveAction',
-            'Action',
-            'ActionAccessSpecification',
-            'ActionStatusType',
-            'ActivateAction',
-            'AddAction',
-            'AdministrativeArea',
-            'AdultEntertainment',
-            'AggregateOffer',
-            'AggregateRating',
-            'AgreeAction',
-            'Airline',
-            'Airport',
-            'AlignmentObject',
-            'AllocateAction',
-            'AmusementPark',
-            'AnimalShelter',
-            'Answer',
-            'Apartment',
-            'ApartmentComplex',
-            'AppendAction',
-            'ApplyAction',
-            'Aquarium',
-            'ArriveAction',
-            'ArtGallery',
-            'Article',
-            'AskAction',
-            'AssessAction',
-            'AssignAction',
-            'Attorney',
-            'Audience',
-            'AudioObject',
-            'AuthorizeAction',
-            'AutoBodyShop',
-            'AutoDealer',
-            'AutoPartsStore',
-            'AutoRental',
-            'AutoRepair',
-            'AutoWash',
-            'AutomatedTeller',
-            'AutomotiveBusiness',
-            'Bakery',
-            'BankAccount',
-            'BankOrCreditUnion',
-            'BarOrPub',
-            'Barcode',
-            'Beach',
-            'BeautySalon',
-            'BedAndBreakfast',
-            'BedDetails',
-            'BedType',
-            'BefriendAction',
-            'BikeStore',
-            'Blog',
-            'BlogPosting',
-            'BoardingPolicyType',
-            'BodyOfWater',
-            'Book',
-            'BookFormatType',
-            'BookSeries',
-            'BookStore',
-            'BookmarkAction',
-            'BorrowAction',
-            'BowlingAlley',
-            'Brand',
-            'BreadcrumbList',
-            'Brewery',
-            'Bridge',
-            'BroadcastChannel',
-            'BroadcastEvent',
-            'BroadcastFrequencySpecification',
-            'BroadcastService',
-            'BuddhistTemple',
-            'BusReservation',
-            'BusStation',
-            'BusStop',
-            'BusTrip',
-            'BusinessAudience',
-            'BusinessEntityType',
-            'BusinessEvent',
-            'BusinessFunction',
-            'BuyAction',
-            'CableOrSatelliteService',
-            'CafeOrCoffeeShop',
-            'Campground',
-            'CampingPitch',
-            'Canal',
-            'CancelAction',
-            'Car',
-            'Casino',
-            'CatholicChurch',
-            'Cemetery',
-            'CheckAction',
-            'CheckInAction',
-            'CheckOutAction',
-            'CheckoutPage',
-            'ChildCare',
-            'ChildrensEvent',
-            'ChooseAction',
-            'Church',
-            'City',
-            'CityHall',
-            'CivicStructure',
-            'ClaimReview',
-            'Clip',
-            'ClothingStore',
-            'CollectionPage',
-            'CollegeOrUniversity',
-            'ComedyClub',
-            'ComedyEvent',
-            'Comment',
-            'CommentAction',
-            'CommunicateAction',
-            'CompoundPriceSpecification',
-            'ComputerLanguage',
-            'ComputerStore',
-            'ConfirmAction',
-            'ConsumeAction',
-            'ContactPage',
-            'ContactPoint',
-            'ContactPointOption',
-            'Continent',
-            'ControlAction',
-            'ConvenienceStore',
-            'Conversation',
-            'CookAction',
-            'Corporation',
-            'Country',
-            'Course',
-            'CourseInstance',
-            'Courthouse',
-            'CreateAction',
-            'CreativeWork',
-            'CreativeWorkSeason',
-            'CreativeWorkSeries',
-            'CreditCard',
-            'Crematorium',
-            'CurrencyConversionService',
-            'DanceEvent',
-            'DanceGroup',
-            'DataCatalog',
-            'DataDownload',
-            'DataFeed',
-            'DataFeedItem',
-            'Dataset',
-            'DayOfWeek',
-            'DaySpa',
-            'DeactivateAction',
-            'DefenceEstablishment',
-            'DeleteAction',
-            'DeliveryChargeSpecification',
-            'DeliveryEvent',
-            'DeliveryMethod',
-            'Demand',
-            'Dentist',
-            'DepartAction',
-            'DepartmentStore',
-            'DepositAccount',
-            'DigitalDocument',
-            'DigitalDocumentPermission',
-            'DigitalDocumentPermissionType',
-            'DisagreeAction',
-            'DiscoverAction',
-            'DiscussionForumPosting',
-            'DislikeAction',
-            'Distance',
-            'Distillery',
-            'DonateAction',
-            'DownloadAction',
-            'DrawAction',
-            'DrinkAction',
-            'DriveWheelConfigurationValue',
-            'DryCleaningOrLaundry',
-            'Duration',
-            'EatAction',
-            'EducationEvent',
-            'EducationalAudience',
-            'EducationalOrganization',
-            'Electrician',
-            'ElectronicsStore',
-            'ElementarySchool',
-            'EmailMessage',
-            'Embassy',
-            'EmergencyService',
-            'EmployeeRole',
-            'EmployerAggregateRating',
-            'EmploymentAgency',
-            'EndorseAction',
-            'EndorsementRating',
-            'Energy',
-            'EngineSpecification',
-            'EntertainmentBusiness',
-            'EntryPoint',
-            'Enumeration',
-            'Episode',
-            'Event',
-            'EventReservation',
-            'EventStatusType',
-            'EventVenue',
-            'ExerciseAction',
-            'ExerciseGym',
-            'ExhibitionEvent',
-            'FAQPage',
-            'FMRadioChannel',
-            'FastFoodRestaurant',
-            'Festival',
-            'FilmAction',
-            'FinancialProduct',
-            'FinancialService',
-            'FindAction',
-            'FireStation',
-            'Flight',
-            'FlightReservation',
-            'Florist',
-            'FollowAction',
-            'FoodEstablishment',
-            'FoodEstablishmentReservation',
-            'FoodEvent',
-            'FoodService',
-            'FurnitureStore',
-            'Game',
-            'GamePlayMode',
-            'GameServer',
-            'GameServerStatus',
-            'GardenStore',
-            'GasStation',
-            'GatedResidenceCommunity',
-            'GenderType',
-            'GeneralContractor',
-            'GeoCircle',
-            'GeoCoordinates',
-            'GeoShape',
-            'GiveAction',
-            'GolfCourse',
-            'GovernmentBuilding',
-            'GovernmentOffice',
-            'GovernmentOrganization',
-            'GovernmentPermit',
-            'GovernmentService',
-            'GroceryStore',
-            'HVACBusiness',
-            'HairSalon',
-            'HardwareStore',
-            'HealthAndBeautyBusiness',
-            'HealthClub',
-            'HighSchool',
-            'HinduTemple',
-            'HobbyShop',
-            'HomeAndConstructionBusiness',
-            'HomeGoodsStore',
-            'Hospital',
-            'Hostel',
-            'Hotel',
-            'HotelRoom',
-            'House',
-            'HousePainter',
-            'HowTo',
-            'HowToDirection',
-            'HowToItem',
-            'HowToSection',
-            'HowToStep',
-            'HowToSupply',
-            'HowToTip',
-            'HowToTool',
-            'IceCreamShop',
-            'IgnoreAction',
-            'ImageGallery',
-            'ImageObject',
-            'IndividualProduct',
-            'InformAction',
-            'InsertAction',
-            'InstallAction',
-            'InsuranceAgency',
-            'Intangible',
-            'InteractAction',
-            'InteractionCounter',
-            'InternetCafe',
-            'InvestmentOrDeposit',
-            'InviteAction',
-            'Invoice',
-            'ItemAvailability',
-            'ItemList',
-            'ItemListOrderType',
-            'ItemPage',
-            'JewelryStore',
-            'JobPosting',
-            'JoinAction',
-            'LakeBodyOfWater',
-            'Landform',
-            'LandmarksOrHistoricalBuildings',
-            'Language',
-            'LeaveAction',
-            'LegalService',
-            'LegislativeBuilding',
-            'LendAction',
-            'Library',
-            'LikeAction',
-            'LiquorStore',
-            'ListItem',
-            'ListenAction',
-            'LiteraryEvent',
-            'LiveBlogPosting',
-            'LoanOrCredit',
-            'LocalBusiness',
-            'LocationFeatureSpecification',
-            'LockerDelivery',
-            'Locksmith',
-            'LodgingBusiness',
-            'LodgingReservation',
-            'LoseAction',
-            'Map',
-            'MapCategoryType',
-            'MarryAction',
-            'Mass',
-            'MediaGallery',
-            'MediaObject',
-            'MediaSubscription',
-            'MedicalOrganization',
-            'MeetingRoom',
-            'MensClothingStore',
-            'Menu',
-            'MenuItem',
-            'MenuSection',
-            'Message',
-            'MiddleSchool',
-            'MobileApplication',
-            'MobilePhoneStore',
-            'MonetaryAmount',
-            'MonetaryAmountDistribution',
-            'Mosque',
-            'Motel',
-            'MotorcycleDealer',
-            'MotorcycleRepair',
-            'Mountain',
-            'MoveAction',
-            'Movie',
-            'MovieClip',
-            'MovieRentalStore',
-            'MovieSeries',
-            'MovieTheater',
-            'MovingCompany',
-            'Museum',
-            'MusicAlbum',
-            'MusicAlbumProductionType',
-            'MusicAlbumReleaseType',
-            'MusicComposition',
-            'MusicEvent',
-            'MusicGroup',
-            'MusicPlaylist',
-            'MusicRecording',
-            'MusicRelease',
-            'MusicReleaseFormatType',
-            'MusicStore',
-            'MusicVenue',
-            'MusicVideoObject',
-            'NGO',
-            'NailSalon',
-            'NewsArticle',
-            'NightClub',
-            'Notary',
-            'NoteDigitalDocument',
-            'NutritionInformation',
-            'Occupation',
-            'OceanBodyOfWater',
-            'Offer',
-            'OfferCatalog',
-            'OfferItemCondition',
-            'OfficeEquipmentStore',
-            'OnDemandEvent',
-            'OpeningHoursSpecification',
-            'Order',
-            'OrderAction',
-            'OrderItem',
-            'OrderStatus',
-            'Organization',
-            'OrganizationRole',
-            'OrganizeAction',
-            'OutletStore',
-            'OwnershipInfo',
-            'PaintAction',
-            'Painting',
-            'ParcelDelivery',
-            'ParcelService',
-            'ParentAudience',
-            'Park',
-            'ParkingFacility',
-            'PawnShop',
-            'PayAction',
-            'PaymentCard',
-            'PaymentChargeSpecification',
-            'PaymentMethod',
-            'PaymentService',
-            'PaymentStatusType',
-            'PeopleAudience',
-            'PerformAction',
-            'PerformanceRole',
-            'PerformingArtsTheater',
-            'PerformingGroup',
-            'Periodical',
-            'Permit',
-            'Person',
-            'PetStore',
-            'Pharmacy',
-            'Photograph',
-            'PhotographAction',
-            'Physician',
-            'Place',
-            'PlaceOfWorship',
-            'PlanAction',
-            'PlayAction',
-            'Playground',
-            'Plumber',
-            'PoliceStation',
-            'Pond',
-            'PostOffice',
-            'PostalAddress',
-            'PreOrderAction',
-            'PrependAction',
-            'Preschool',
-            'PresentationDigitalDocument',
-            'PriceSpecification',
-            'Product',
-            'ProductModel',
-            'ProfessionalService',
-            'ProfilePage',
-            'ProgramMembership',
-            'PropertyValue',
-            'PropertyValueSpecification',
-            'PublicSwimmingPool',
-            'PublicationEvent',
-            'PublicationIssue',
-            'PublicationVolume',
-            'QAPage',
-            'QualitativeValue',
-            'QuantitativeValue',
-            'QuantitativeValueDistribution',
-            'Quantity',
-            'Question',
-            'QuoteAction',
-            'RVPark',
-            'RadioChannel',
-            'RadioClip',
-            'RadioEpisode',
-            'RadioSeason',
-            'RadioSeries',
-            'RadioStation',
-            'Rating',
-            'ReactAction',
-            'ReadAction',
-            'RealEstateAgent',
-            'ReceiveAction',
-            'Recipe',
-            'RecyclingCenter',
-            'RegisterAction',
-            'RejectAction',
-            'RentAction',
-            'RentalCarReservation',
-            'ReplaceAction',
-            'ReplyAction',
-            'Report',
-            'Reservation',
-            'ReservationPackage',
-            'ReservationStatusType',
-            'ReserveAction',
-            'Reservoir',
-            'Residence',
-            'Resort',
-            'Restaurant',
-            'RestrictedDiet',
-            'ResumeAction',
-            'ReturnAction',
-            'Review',
-            'ReviewAction',
-            'RiverBodyOfWater',
-            'Role',
-            'RoofingContractor',
-            'Room',
-            'RsvpAction',
-            'RsvpResponseType',
-            'SaleEvent',
-            'ScheduleAction',
-            'ScholarlyArticle',
-            'School',
-            'ScreeningEvent',
-            'Sculpture',
-            'SeaBodyOfWater',
-            'SearchAction',
-            'SearchResultsPage',
-            'Seat',
-            'SelfStorage',
-            'SellAction',
-            'SendAction',
-            'Series',
-            'Service',
-            'ServiceChannel',
-            'ShareAction',
-            'ShoeStore',
-            'ShoppingCenter',
-            'SingleFamilyResidence',
-            'SiteNavigationElement',
-            'SkiResort',
-            'SocialEvent',
-            'SocialMediaPosting',
-            'SoftwareApplication',
-            'SoftwareSourceCode',
-            'SomeProducts',
-            'SpeakableSpecification',
-            'Specialty',
-            'SportingGoodsStore',
-            'SportsActivityLocation',
-            'SportsClub',
-            'SportsEvent',
-            'SportsOrganization',
-            'SportsTeam',
-            'SpreadsheetDigitalDocument',
-            'StadiumOrArena',
-            'State',
-            'SteeringPositionValue',
-            'Store',
-            'StructuredValue',
-            'SubscribeAction',
-            'SubwayStation',
-            'Suite',
-            'SuspendAction',
-            'Synagogue',
-            'TVClip',
-            'TVEpisode',
-            'TVSeason',
-            'TVSeries',
-            'Table',
-            'TakeAction',
-            'TattooParlor',
-            'TaxiReservation',
-            'TaxiService',
-            'TaxiStand',
-            'TechArticle',
-            'TelevisionChannel',
-            'TelevisionStation',
-            'TennisComplex',
-            'TextDigitalDocument',
-            'TheaterEvent',
-            'TheaterGroup',
-            'Thing',
-            'Ticket',
-            'TieAction',
-            'TipAction',
-            'TireShop',
-            'TouristAttraction',
-            'TouristInformationCenter',
-            'ToyStore',
-            'TrackAction',
-            'TradeAction',
-            'TrainReservation',
-            'TrainStation',
-            'TrainTrip',
-            'TransferAction',
-            'TravelAction',
-            'TravelAgency',
-            'Trip',
-            'TypeAndQuantityNode',
-            'UnRegisterAction',
-            'UnitPriceSpecification',
-            'UpdateAction',
-            'UseAction',
-            'Vehicle',
-            'VideoGallery',
-            'VideoGame',
-            'VideoGameClip',
-            'VideoGameSeries',
-            'VideoObject',
-            'ViewAction',
-            'VisualArtsEvent',
-            'VisualArtwork',
-            'Volcano',
-            'VoteAction',
-            'WPAdBlock',
-            'WPFooter',
-            'WPHeader',
-            'WPSideBar',
-            'WantAction',
-            'WarrantyPromise',
-            'WarrantyScope',
-            'WatchAction',
-            'Waterfall',
-            'WearAction',
-            'WebApplication',
-            'WebPage',
-            'WebPageElement',
-            'WebSite',
-            'WholesaleStore',
-            'WinAction',
-            'Winery',
-            'WorkersUnion',
-            'WriteAction',
-            'Zoo',
-        ];
+        return \array_keys($this->getTypesWithModels());
+    }
+
+    private function getTypesWithModels(): array
+    {
+        if (empty(static::$types)) {
+            static::$types = $this->loadConfiguration();
+        }
+
+        return static::$types;
+    }
+
+    private function loadConfiguration(): array
+    {
+        if ($this->cache->has(static::CACHE_ENTRY_IDENTIFIER_TYPES)) {
+            return $this->cache->require(static::CACHE_ENTRY_IDENTIFIER_TYPES);
+        }
+
+        $packages = $this->packageManager->getActivePackages();
+        $allTypeModels = [[]];
+        foreach ($packages as $package) {
+            $typeModelsConfiguration = $package->getPackagePath() . 'Configuration/TxSchema/TypeModels.php';
+            if (\file_exists($typeModelsConfiguration)) {
+                $typeModelsInPackage = require $typeModelsConfiguration;
+                if (\is_array($typeModelsInPackage)) {
+                    $allTypeModels[] = $this->enrichTypeModelsArrayWithTypeKey($typeModelsInPackage);
+                }
+            }
+        }
+        $typeModels = \array_replace_recursive(...$allTypeModels);
+        \ksort($typeModels);
+
+        $this->cache->set(static::CACHE_ENTRY_IDENTIFIER_TYPES, 'return ' . \var_export($typeModels, true) . ';');
+
+        return $typeModels;
+    }
+
+    private function enrichTypeModelsArrayWithTypeKey(array $typeModels): array
+    {
+        $typeModelsWithTypeKey = [];
+        foreach ($typeModels as $typeModel) {
+            $type = \substr(\strrchr($typeModel, '\\') ?: '', 1);
+            $typeModelsWithTypeKey[$type] = $typeModel;
+        }
+
+        return $typeModelsWithTypeKey;
     }
 
     /**
@@ -636,21 +114,40 @@ final class TypesProvider
      */
     public function getWebPageTypes(): array
     {
-        return [
-            'AboutPage',
-            'CheckoutPage',
-            'CollectionPage',
-            'ContactPage',
-            'FAQPage',
-            'ImageGallery',
-            'ItemPage',
-            'MediaGallery',
-            'ProfilePage',
-            'QAPage',
-            'SearchResultsPage',
-            'VideoGallery',
-            'WebPage',
-        ];
+        if (empty(static::$webPageTypes)) {
+            static::$webPageTypes = $this->loadSpecialTypes(
+                static::CACHE_ENTRY_IDENTIFIER_WEBPAGE_TYPES,
+                WebPageTypeInterface::class
+            );
+        }
+
+        return static::$webPageTypes;
+    }
+
+    private function loadSpecialTypes(string $cacheEntryIdentifier, string $typeInterface): array
+    {
+        if ($this->cache->has($cacheEntryIdentifier)) {
+            return $this->cache->require($cacheEntryIdentifier);
+        }
+
+        $specialTypes = [];
+        foreach ($this->getTypesWithModels() as $type => $typeModel) {
+            try {
+                $interfaces = \array_keys((new \ReflectionClass($typeModel))->getInterfaces());
+
+                if (\in_array($typeInterface, $interfaces)) {
+                    $specialTypes[] = $type;
+                }
+            } catch (\ReflectionException $e) {
+                // Ignore
+            }
+        }
+
+        \sort($specialTypes);
+
+        $this->cache->set($cacheEntryIdentifier, 'return ' . \var_export($specialTypes, true) . ';');
+
+        return $specialTypes;
     }
 
     /**
@@ -659,15 +156,14 @@ final class TypesProvider
      */
     public function getWebPageElementTypes(): array
     {
-        return [
-            'SiteNavigationElement',
-            'Table',
-            'WPAdBlock',
-            'WPFooter',
-            'WPHeader',
-            'WPSideBar',
-            'WebPageElement',
-        ];
+        if (empty(static::$webPageElementTypes)) {
+            static::$webPageElementTypes = $this->loadSpecialTypes(
+                static::CACHE_ENTRY_IDENTIFIER_WEBPAGEELEMENT_TYPES,
+                WebPageElementTypeInterface::class
+            );
+        }
+
+        return static::$webPageElementTypes;
     }
 
     /**

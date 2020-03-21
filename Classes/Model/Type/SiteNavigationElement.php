@@ -11,11 +11,12 @@ namespace Brotkrueml\Schema\Model\Type;
  */
 
 use Brotkrueml\Schema\Core\Model\AbstractType;
+use Brotkrueml\Schema\Core\Model\WebPageElementTypeInterface;
 
 /**
  * A navigation element of the page.
  */
-final class SiteNavigationElement extends AbstractType
+final class SiteNavigationElement extends AbstractType implements WebPageElementTypeInterface
 {
     protected $properties = [
         'about' => null,

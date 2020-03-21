@@ -15,14 +15,36 @@ namespace Brotkrueml\Schema\Provider;
  */
 final class WebPageTypeProvider
 {
+    /** @var TypesProvider */
+    private static $typesProvider;
+
     public static function getTypesForTcaSelect(): array
     {
-        $types = (new TypesProvider())->getWebPageTypes();
+        $types = static::getTypesProvider()->getWebPageTypes();
 
         \array_walk($types, function (&$type) {
             $type = [$type, $type];
         });
 
         return \array_merge([['', '']], $types);
+    }
+
+    private static function getTypesProvider(): TypesProvider
+    {
+        if (empty(static::$typesProvider)) {
+            static::$typesProvider = new TypesProvider();
+        }
+
+        return static::$typesProvider;
+    }
+
+    /**
+     * For testing purposes only!
+     *
+     * @param TypesProvider $typesProvider
+     */
+    public static function setTypesProvider(TypesProvider $typesProvider): void
+    {
+        static::$typesProvider = $typesProvider;
     }
 }

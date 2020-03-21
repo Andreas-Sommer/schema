@@ -11,11 +11,12 @@ namespace Brotkrueml\Schema\Model\Type;
  */
 
 use Brotkrueml\Schema\Core\Model\AbstractType;
+use Brotkrueml\Schema\Core\Model\WebPageElementTypeInterface;
 
 /**
  * A table on a Web page.
  */
-final class Table extends AbstractType
+final class Table extends AbstractType implements WebPageElementTypeInterface
 {
     protected $properties = [
         'about' => null,

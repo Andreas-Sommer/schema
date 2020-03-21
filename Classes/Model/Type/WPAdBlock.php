@@ -11,11 +11,12 @@ namespace Brotkrueml\Schema\Model\Type;
  */
 
 use Brotkrueml\Schema\Core\Model\AbstractType;
+use Brotkrueml\Schema\Core\Model\WebPageElementTypeInterface;
 
 /**
  * An advertising section of the page.
  */
-final class WPAdBlock extends AbstractType
+final class WPAdBlock extends AbstractType implements WebPageElementTypeInterface
 {
     protected $properties = [
         'about' => null,

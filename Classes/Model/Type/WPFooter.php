@@ -11,11 +11,12 @@ namespace Brotkrueml\Schema\Model\Type;
  */
 
 use Brotkrueml\Schema\Core\Model\AbstractType;
+use Brotkrueml\Schema\Core\Model\WebPageElementTypeInterface;
 
 /**
  * The footer section of the page.
  */
-final class WPFooter extends AbstractType
+final class WPFooter extends AbstractType implements WebPageElementTypeInterface
 {
     protected $properties = [
         'about' => null,

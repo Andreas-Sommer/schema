@@ -11,11 +11,12 @@ namespace Brotkrueml\Schema\Model\Type;
  */
 
 use Brotkrueml\Schema\Core\Model\AbstractType;
+use Brotkrueml\Schema\Core\Model\WebPageElementTypeInterface;
 
 /**
  * A sidebar section of the page.
  */
-final class WPSideBar extends AbstractType
+final class WPSideBar extends AbstractType implements WebPageElementTypeInterface
 {
     protected $properties = [
         'about' => null,
