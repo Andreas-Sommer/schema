@@ -308,9 +308,7 @@ abstract class AbstractType
 
     private function getType(): string
     {
-        $classNameParts = \explode('\\', static::class);
-
-        return \end($classNameParts);
+        return \substr(\strrchr(static::class, '\\') ?: '', 1);
     }
 
     /**
