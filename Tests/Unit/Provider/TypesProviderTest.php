@@ -286,4 +286,18 @@ class TypesProviderTest extends TestCase
 
         self::assertNull($actual);
     }
+
+    /**
+     * @test
+     */
+    public function resolveTypeToModelReturnsNullWhenTypeIsEmpty(): void
+    {
+        $this->cacheFrontendMock
+            ->method('has')
+            ->willReturn(false);
+
+        $actual = $this->subject->resolveTypeToModel('');
+
+        self::assertNull($actual);
+    }
 }

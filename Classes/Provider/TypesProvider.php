@@ -190,6 +190,10 @@ final class TypesProvider
      */
     public function resolveTypeToModel(string $type): ?string
     {
+        if (empty($type)) {
+            return null;
+        }
+
         if (empty(static::$types)) {
             $this->getTypesWithModels();
         }
