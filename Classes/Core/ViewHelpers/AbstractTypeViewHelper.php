@@ -168,9 +168,7 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
 
     protected function getType(): string
     {
-        $classNameParts = \explode('\\', static::class);
-
-        return \str_replace('ViewHelper', '', \end($classNameParts));
+        return \substr(\strrchr(static::$typeModel, '\\') ?: '', 1);
     }
 
     protected function assignArgumentsToItem(): void
