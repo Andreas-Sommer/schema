@@ -102,7 +102,7 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
         }
     }
 
-    protected function checkSpecificTypeAttribute(): void
+    private function checkSpecificTypeAttribute(): void
     {
         $specificTypeFromArguments = (string)($this->arguments[static::ARGUMENT_SPECIFIC_TYPE] ?? '');
         unset($this->arguments[static::ARGUMENT_SPECIFIC_TYPE]);
@@ -126,7 +126,7 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
         $this->specificType = $specificTypeFromArguments;
     }
 
-    protected function checkAsAttribute(): void
+    private function checkAsAttribute(): void
     {
         if (!$this->stack->isEmpty()) {
             $parentPropertyNameFromArgument = (string)($this->arguments[static::ARGUMENT_AS] ?? '');
@@ -148,7 +148,7 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
         unset($this->arguments[static::ARGUMENT_AS]);
     }
 
-    protected function checkIsMainEntityOfWebPage(): void
+    private function checkIsMainEntityOfWebPage(): void
     {
         $this->isMainEntityOfWebPage = (bool)($this->arguments[static::ARGUMENT_IS_MAIN_ENTITY_OF_WEBPAGE] ?? false);
 
@@ -166,12 +166,12 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
         unset($this->arguments[static::ARGUMENT_IS_MAIN_ENTITY_OF_WEBPAGE]);
     }
 
-    protected function getType(): string
+    private function getType(): string
     {
         return \substr(\strrchr(static::$typeModel, '\\') ?: '', 1);
     }
 
-    protected function assignArgumentsToItem(): void
+    private function assignArgumentsToItem(): void
     {
         $modelClassName = static::$typeModel;
         if ($this->specificType) {

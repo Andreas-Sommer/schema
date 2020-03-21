@@ -47,7 +47,7 @@ abstract class AbstractType
         $this->addAdditionalProperties();
     }
 
-    protected function addAdditionalProperties(): void
+    private function addAdditionalProperties(): void
     {
         $cacheEntryIdentifier = 'additionalTypeProperties-' . \str_replace('\\', '_', static::class);
         $cache = GeneralUtility::makeInstance(CacheManager::class)->getCache('tx_schema');
