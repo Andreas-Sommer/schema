@@ -184,4 +184,20 @@ final class TypesProvider
             )
         );
     }
+
+    /**
+     * @internal Only for internal use, not a public API!
+     */
+    public function resolveTypeToModel(string $type): ?string
+    {
+        if (empty(static::$types)) {
+            $this->getTypesWithModels();
+        }
+
+        if (\array_key_exists($type, static::$types)) {
+            return static::$types[$type];
+        }
+
+        return null;
+    }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Brotkrueml\Schema\Tests\Unit\Provider;
 
 use Brotkrueml\Schema\Provider\TypesProvider;
+use Brotkrueml\Schema\Tests\Fixtures\Model\Type\FixtureImage;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use TYPO3\CMS\Core\Cache\CacheManager;
@@ -256,5 +257,33 @@ class TypesProviderTest extends TestCase
         $actual = $this->subject->getContentTypes();
 
         self::assertSame(['FixtureImage', 'FixtureThing'], $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function resolveTypeToModelReturnsCorrectModel(): void
+    {
+        $this->cacheFrontendMock
+            ->method('has')
+            ->willReturn(false);
+
+        $actual = $this->subject->resolveTypeToModel('FixtureImage');
+
+        self::assertSame(FixtureImage::class, $actual);
+    }
+
+    /**
+     * @test
+     */
+    public function resolveTypeToModelReturnsNullWhenTypeNotAvailable(): void
+    {
+        $this->cacheFrontendMock
+            ->method('has')
+            ->willReturn(false);
+
+        $actual = $this->subject->resolveTypeToModel('NotConfiguredType');
+
+        self::assertNull($actual);
     }
 }
