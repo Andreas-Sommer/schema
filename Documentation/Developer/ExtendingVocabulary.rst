@@ -121,7 +121,7 @@ So let's start with this example.
 
 #. Register The Type Model
 
-   It is good practise to register the new type in the configuration file
+   Now register the new type in the configuration file
    :file:`Configuration/TxSchema/TypeModels.php`::
 
       <?php
@@ -129,10 +129,11 @@ So let's start with this example.
          \Acme\LooneyTunes\Model\Type\VirtualLocation::class,
       ];
 
-   After clearing the cache, the new type is available, e.g. with the API method
-   :php:`TypesProvider->getContentTypes()` (see
-   :ref:`reference <api-typesprovider-getcontenttypes>`). Please also note that
-   this may be mandatory in future versions of the TYPO3 schema extension.
+   As it is not mandatory to register the class for usage in the API only, the
+   registry is utilised in various places (like view helpers). Please also note
+   that this may be mandatory in future versions of the TYPO3 schema extension.
+
+   After changes to the :file:`TypeModels.php` file the cache must be cleared.
 
 .. note::
 
@@ -148,12 +149,6 @@ So let's start with this example.
    extension. This may be necessary if you define a pending type with pending
    properties (which you also use) to avoid breaks when the type is included
    into the core vocabulary but some properties aren't.
-
-   This can be the case if you rely on the
-   :php:`TypesProvider->getContentTypes()` API call mentioned above. In the
-   future there can also be an `additional extension
-   <https://github.com/brotkrueml/schema-records>`_ to add Schema.org vocabulary
-   through editors.
 
 
 Add A New WebPage Type

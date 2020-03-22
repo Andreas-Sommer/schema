@@ -13,6 +13,7 @@ namespace Brotkrueml\Schema\Core\ViewHelpers;
 use Brotkrueml\Schema\Core\Model\AbstractType;
 use Brotkrueml\Schema\Core\TypeStack;
 use Brotkrueml\Schema\Manager\SchemaManager;
+use Brotkrueml\Schema\Registry\TypeRegistry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper;
 
@@ -28,7 +29,7 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
     private $item = [];
 
     private $isMainEntityOfWebPage = false;
-    private $specificType = '';
+    private $specificTypeModelClassName = '';
 
     private $parentPropertyName = '';
 
@@ -111,9 +112,10 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
             return;
         }
 
-        $className = '\\Brotkrueml\\Schema\\ViewHelpers\\Type\\' . $specificTypeFromArguments . 'ViewHelper';
+        $className = GeneralUtility::makeInstance(TypeRegistry::class)
+            ->resolveModelClassFromType($specificTypeFromArguments);
 
-        if (!\class_exists($className)) {
+        if (empty($className) || !\class_exists($className)) {
             throw new ViewHelper\Exception(
                 \sprintf(
                     'The given specific type "%s" does not exist in the schema.org vocabulary, perhaps it is misspelled? Remember, the type must start with a capital letter.',
@@ -123,7 +125,7 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
             );
         }
 
-        $this->specificType = $specificTypeFromArguments;
+        $this->specificTypeModelClassName = $className;
     }
 
     private function checkAsAttribute(): void
@@ -173,12 +175,7 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
 
     private function assignArgumentsToItem(): void
     {
-        $modelClassName = static::$typeModel;
-        if ($this->specificType) {
-            // @todo The fixed namespace here is temporary, later there can be models from different namespaces
-            // @see Feature #38 (Possibility to register additional schema types)
-            $modelClassName = '\\Brotkrueml\\Schema\\Model\\Type\\' . $this->specificType;
-        }
+        $modelClassName = $this->specificTypeModelClassName ?: static::$typeModel;
 
         /** @var AbstractType $model */
         $model = new $modelClassName();
