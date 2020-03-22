@@ -86,26 +86,25 @@ So let's start with this example.
 
       final class VirtualLocation extends AbstractType
       {
-         protected $properties = [
-            'additionalType' => null,
-            'alternateName' => null,
-            'description' => null,
-            'disambiguatingDescription' => null,
-            'identifier' => null,
-            'image' => null,
-            'mainEntityOfPage' => null,
-            'name' => null,
-            'potentialAction' => null,
-            'sameAs' => null,
-            'subjectOf' => null,
-            'url' => null,
+         protected static $propertyNames = [
+            'additionalType',
+            'alternateName',
+            'description',
+            'disambiguatingDescription',
+            'identifier',
+            'image',
+            'mainEntityOfPage',
+            'name',
+            'potentialAction',
+            'sameAs',
+            'subjectOf',
+            'url',
          ];
       }
 
    That's it. In the example, the class is stored in :file:`Classes/Model/Type`
-   but you can choose any namespace. The protected property :php:`$properties`
-   contains the available Schema.org properties: The key is the name, the value
-   is always :php:`null`.
+   but you can choose any namespace. The protected static property
+   :php:`$propertyNames` contains the available Schema.org properties.
 
    Now you can use the `VirtualLocation` in your PHP code::
 
@@ -182,7 +181,7 @@ Then mark your class as a WebPage type with the interface
 
    final class MedicalWebPage extends AbstractType implements WebPageTypeInterface
    {
-      protected $properties = [
+      protected static $propertyNames = [
          // ... the properties ...
       ];
    }

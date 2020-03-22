@@ -8,7 +8,7 @@ use Brotkrueml\Schema\Core\Model\WebPageTypeInterface;
 
 final class WebPage extends AbstractType implements WebPageTypeInterface
 {
-    protected $properties = [
-        'expires' => null,
+    protected static $propertyNames = [
+        'expires',
     ];
 }

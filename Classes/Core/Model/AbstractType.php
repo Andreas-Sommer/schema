@@ -21,6 +21,15 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 abstract class AbstractType
 {
     /**
+     * The properties of a specific type
+     * These are defined in the concrete type model class
+     *
+     * @var array<string>
+     * @api
+     */
+    protected static $propertyNames = [];
+
+    /**
      * The ID of the type (mapped to @id in result)
      *
      * @var string|null
@@ -28,12 +37,13 @@ abstract class AbstractType
     private $id;
 
     /**
-     * The properties of a specific type: <propertyName> => <propertyValue>
-     * These are defined in the type model class
+     * The properties of a specific type with their corresponding value:
+     * <propertyName> => <propertyValue>
+     * Also the additional properties added by an event listener are included
      *
-     * @var array
+     * @var array<string, mixed>
      */
-    protected $properties = [];
+    private $properties = [];
 
     /**
      * The fully rendered type with all children as array
@@ -44,7 +54,13 @@ abstract class AbstractType
 
     public function __construct()
     {
+        $this->initialiseProperties();
         $this->addAdditionalProperties();
+    }
+
+    private function initialiseProperties(): void
+    {
+        $this->properties = \array_fill_keys(static::$propertyNames, null);
     }
 
     private function addAdditionalProperties(): void

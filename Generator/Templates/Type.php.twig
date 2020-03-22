@@ -29,9 +29,9 @@ final class {{ className }} extends AbstractType
     implements WebPageElementTypeInterface
 {% endif %}
 {
-    protected $properties = [
+    protected static $propertyNames = [
         {% for property in properties %}
-            '{{ property }}' => null,
+            '{{ property }}',
         {% endfor %}
     ];
 }
