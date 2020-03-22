@@ -348,6 +348,8 @@ Return value
    Array, sorted alphabetically by type name.
 
 
+.. _api-typesprovider-getcontenttypes:
+
 :php:`->getContentTypes()`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
