@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Deprecated
+- TypesProvider in favour of TypeRegistry (which now is a singleton)
+
 ## [1.6.0] - 2020-03-09
 
 ### Added

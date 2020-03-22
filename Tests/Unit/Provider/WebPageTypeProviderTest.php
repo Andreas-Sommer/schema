@@ -2,9 +2,10 @@
 
 namespace Brotkrueml\Schema\Tests\Unit\Provider;
 
-use Brotkrueml\Schema\Provider\TypesProvider;
 use Brotkrueml\Schema\Provider\WebPageTypeProvider;
+use Brotkrueml\Schema\Registry\TypeRegistry;
 use PHPUnit\Framework\TestCase;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class WebPageTypeProviderTest extends TestCase
 {
@@ -17,13 +18,19 @@ class WebPageTypeProviderTest extends TestCase
 
     protected function setUp(): void
     {
-        $typesProviderStub = $this->createStub(TypesProvider::class);
-        $typesProviderStub
+        $typeRegistryStub = $this->createStub(TypeRegistry::class);
+        $typeRegistryStub
             ->method('getWebPageTypes')
             ->willReturn($this->availableWebPageTypesForTesting);
 
-        WebPageTypeProvider::setTypesProvider($typesProviderStub);
+        GeneralUtility::setSingletonInstance(TypeRegistry::class, $typeRegistryStub);
     }
+
+    protected function tearDown(): void
+    {
+        GeneralUtility::purgeInstances();
+    }
+
     public function dataProvider(): iterable
     {
         foreach ($this->availableWebPageTypesForTesting as $type) {

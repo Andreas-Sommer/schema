@@ -5,7 +5,7 @@ namespace Brotkrueml\Schema\Tests\Unit\Aspect;
 
 use Brotkrueml\Schema\Aspect\WebPageAspect;
 use Brotkrueml\Schema\Manager\SchemaManager;
-use Brotkrueml\Schema\Provider\TypesProvider;
+use Brotkrueml\Schema\Registry\TypeRegistry;
 use Brotkrueml\Schema\Tests\Fixtures\Model\Type\ItemPage;
 use Brotkrueml\Schema\Tests\Fixtures\Model\Type\WebPage;
 use Brotkrueml\Schema\Tests\Helper\SchemaCacheTrait;
@@ -36,8 +36,8 @@ class WebPageAspectTest extends TestCase
     /** @var MockObject|RequestHandlerInterface */
     protected $handlerMock;
 
-    /** @var Stub|TypesProvider */
-    private $typesProviderStub;
+    /** @var Stub|TypeRegistry */
+    private $typeRegistryStub;
 
     protected function setUp(): void
     {
@@ -68,8 +68,8 @@ class WebPageAspectTest extends TestCase
         $configuration = $reflector->getProperty('configuration');
         $configuration->setAccessible(true);
 
-        $typesProvider = $reflector->getProperty('typesProvider');
-        $typesProvider->setAccessible(true);
+        $typeRegistry = $reflector->getProperty('typeRegistry');
+        $typeRegistry->setAccessible(true);
 
         $packageManagerStub = $this->createStub(PackageManager::class);
         $packageManagerStub
@@ -95,7 +95,7 @@ class WebPageAspectTest extends TestCase
 
         self::assertSame('fake controller', $controller->getValue($subject));
         self::assertInstanceOf(ExtensionConfiguration::class, $configuration->getValue($subject));
-        self::assertInstanceOf(TypesProvider::class, $typesProvider->getValue($subject));
+        self::assertInstanceOf(TypeRegistry::class, $typeRegistry->getValue($subject));
 
         unset($GLOBALS['TSFE']);
     }
@@ -126,7 +126,7 @@ class WebPageAspectTest extends TestCase
         (new WebPageAspect(
             $this->controllerMock,
             $configurationMock,
-            $this->typesProviderStub
+            $this->typeRegistryStub
         ))
             ->execute($schemaManagerMock);
     }
@@ -134,7 +134,7 @@ class WebPageAspectTest extends TestCase
     protected function setUpGeneralMocks(): void
     {
         $this->controllerMock = $this->createMock(TypoScriptFrontendController::class);
-        $this->typesProviderStub = $this->createStub(TypesProvider::class);
+        $this->typeRegistryStub = $this->createStub(TypeRegistry::class);
     }
 
     /**
@@ -156,7 +156,7 @@ class WebPageAspectTest extends TestCase
         (new WebPageAspect(
             $this->controllerMock,
             $this->getExtensionConfigurationMockWithGetReturnsTrue(),
-            $this->typesProviderStub
+            $this->typeRegistryStub
         ))
             ->execute($schemaManagerMock);
     }
@@ -191,7 +191,7 @@ class WebPageAspectTest extends TestCase
             'endtime' => 0,
         ];
 
-        $this->typesProviderStub
+        $this->typeRegistryStub
             ->method('resolveModelClassFromType')
             ->with('WebPage')
             ->willReturn(WebPage::class);
@@ -206,7 +206,7 @@ class WebPageAspectTest extends TestCase
         $subject = new WebPageAspect(
             $this->controllerMock,
             $this->getExtensionConfigurationMockWithGetReturnsTrue(),
-            $this->typesProviderStub
+            $this->typeRegistryStub
         );
 
         $subject->execute($schemaManagerMock);
@@ -227,7 +227,7 @@ class WebPageAspectTest extends TestCase
             'endtime' => 0,
         ];
 
-        $this->typesProviderStub
+        $this->typeRegistryStub
             ->method('resolveModelClassFromType')
             ->with('ItemPage')
             ->willReturn(ItemPage::class);
@@ -242,7 +242,7 @@ class WebPageAspectTest extends TestCase
         $subject = new WebPageAspect(
             $this->controllerMock,
             $this->getExtensionConfigurationMockWithGetReturnsTrue(),
-            $this->typesProviderStub
+            $this->typeRegistryStub
         );
 
         $subject->execute($schemaManagerMock);
@@ -263,7 +263,7 @@ class WebPageAspectTest extends TestCase
             'endtime' => 1561672753,
         ];
 
-        $this->typesProviderStub
+        $this->typeRegistryStub
             ->method('resolveModelClassFromType')
             ->with('WebPage')
             ->willReturn(WebPage::class);
@@ -278,7 +278,7 @@ class WebPageAspectTest extends TestCase
         $subject = new WebPageAspect(
             $this->controllerMock,
             $this->getExtensionConfigurationMockWithGetReturnsTrue(),
-            $this->typesProviderStub
+            $this->typeRegistryStub
         );
 
         $subject->execute($schemaManagerMock);
@@ -306,7 +306,7 @@ class WebPageAspectTest extends TestCase
         (new WebPageAspect(
             $this->controllerMock,
             $this->getExtensionConfigurationMockWithGetReturnsTrue(),
-            $this->typesProviderStub
+            $this->typeRegistryStub
         ))
             ->execute($schemaManagerMock);
     }

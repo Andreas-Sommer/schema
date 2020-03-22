@@ -13,7 +13,7 @@ namespace Brotkrueml\Schema\Aspect;
 use Brotkrueml\Schema\Core\Model\AbstractType;
 use Brotkrueml\Schema\Manager\SchemaManager;
 use Brotkrueml\Schema\Model\Type;
-use Brotkrueml\Schema\Provider\TypesProvider;
+use Brotkrueml\Schema\Registry\TypeRegistry;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -30,19 +30,19 @@ final class BreadcrumbListAspect implements AspectInterface
     /** @var ContentObjectRenderer */
     private $contentObjectRenderer;
 
-    /** @var TypesProvider */
-    private $typesProvider;
+    /** @var TypeRegistry */
+    private $typeRegistry;
 
     public function __construct(
         TypoScriptFrontendController $controller = null,
         ExtensionConfiguration $configuration = null,
         ContentObjectRenderer $contentObjectRenderer = null,
-        TypesProvider $typesProvider = null
+        TypeRegistry $typeRegistry = null
     ) {
         $this->controller = $controller ?? $GLOBALS['TSFE'];
         $this->configuration = $configuration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->contentObjectRenderer = $contentObjectRenderer ?? GeneralUtility::makeInstance(ContentObjectRenderer::class);
-        $this->typesProvider = $typesProvider ?? new TypesProvider();
+        $this->typeRegistry = $typeRegistry ?? GeneralUtility::makeInstance(TypeRegistry::class);
     }
 
     public function execute(SchemaManager $schemaManager): void
@@ -82,7 +82,7 @@ final class BreadcrumbListAspect implements AspectInterface
     {
         $breadcrumbList = (new Type\BreadcrumbList());
         foreach ($rootLine as $index => $page) {
-            $givenItemTypeClass = $this->typesProvider->resolveModelClassFromType($page['tx_schema_webpagetype'] ?? '');
+            $givenItemTypeClass = $this->typeRegistry->resolveModelClassFromType($page['tx_schema_webpagetype'] ?? '');
             $webPageTypeClass = $givenItemTypeClass ?? Type\WebPage::class;
 
             /** @var AbstractType $itemType */

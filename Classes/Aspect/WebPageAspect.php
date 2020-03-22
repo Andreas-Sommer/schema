@@ -12,7 +12,7 @@ namespace Brotkrueml\Schema\Aspect;
 
 use Brotkrueml\Schema\Core\Model\AbstractType;
 use Brotkrueml\Schema\Manager\SchemaManager;
-use Brotkrueml\Schema\Provider\TypesProvider;
+use Brotkrueml\Schema\Registry\TypeRegistry;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -27,17 +27,17 @@ final class WebPageAspect implements AspectInterface
     /** @var ExtensionConfiguration */
     private $configuration;
 
-    /** @var TypesProvider */
-    private $typesProvider;
+    /** @var TypeRegistry */
+    private $typeRegistry;
 
     public function __construct(
         TypoScriptFrontendController $controller = null,
         ExtensionConfiguration $configuration = null,
-        TypesProvider $typesProvider = null
+        TypeRegistry $typeRegistry = null
     ) {
         $this->controller = $controller ?? $GLOBALS['TSFE'];
         $this->configuration = $configuration ?? GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        $this->typesProvider = $typesProvider ?? new TypesProvider();
+        $this->typeRegistry = $typeRegistry ?? new TypeRegistry();
     }
 
     public function execute(SchemaManager $schemaManager): void
@@ -55,7 +55,7 @@ final class WebPageAspect implements AspectInterface
 
         $type = $this->controller->page['tx_schema_webpagetype'] ?: static::DEFAULT_WEBPAGE_TYPE;
 
-        $webPageClass = $this->typesProvider->resolveModelClassFromType($type);
+        $webPageClass = $this->typeRegistry->resolveModelClassFromType($type);
         if ($webPageClass) {
             /** @var AbstractType $webPage */
             $webPage = new $webPageClass();

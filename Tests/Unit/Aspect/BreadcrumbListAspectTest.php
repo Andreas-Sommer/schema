@@ -5,7 +5,7 @@ namespace Brotkrueml\Schema\Tests\Unit\Aspect;
 
 use Brotkrueml\Schema\Aspect\BreadcrumbListAspect;
 use Brotkrueml\Schema\Manager\SchemaManager;
-use Brotkrueml\Schema\Provider\TypesProvider;
+use Brotkrueml\Schema\Registry\TypeRegistry;
 use Brotkrueml\Schema\Tests\Fixtures\Model\Type\ItemPage;
 use Brotkrueml\Schema\Tests\Helper\SchemaCacheTrait;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -37,8 +37,8 @@ class BreadcrumbListAspectTest extends UnitTestCase
     /** @var MockObject|ContentObjectRenderer */
     protected $contentObjectRendererMock;
 
-    /** @var Stub|TypesProvider */
-    private $typesProviderStub;
+    /** @var Stub|TypeRegistry */
+    private $typeRegistryStub;
 
     protected function setUp(): void
     {
@@ -75,7 +75,7 @@ class BreadcrumbListAspectTest extends UnitTestCase
             $this->controllerMock,
             $configurationMock,
             $this->contentObjectRendererMock,
-            $this->typesProviderStub
+            $this->typeRegistryStub
         ))
             ->execute($schemaManagerMock);
     }
@@ -84,7 +84,7 @@ class BreadcrumbListAspectTest extends UnitTestCase
     {
         $this->controllerMock = $this->createMock(TypoScriptFrontendController::class);
         $this->contentObjectRendererMock = $this->createMock(ContentObjectRenderer::class);
-        $this->typesProviderStub = $this->createStub(TypesProvider::class);
+        $this->typeRegistryStub = $this->createStub(TypeRegistry::class);
     }
 
     /**
@@ -106,7 +106,7 @@ class BreadcrumbListAspectTest extends UnitTestCase
             $this->controllerMock,
             $this->getExtensionConfigurationMockWithGetReturnsTrue(),
             $this->contentObjectRendererMock,
-            $this->typesProviderStub
+            $this->typeRegistryStub
         ))
             ->execute($schemaManagerMock);
     }
@@ -313,7 +313,7 @@ class BreadcrumbListAspectTest extends UnitTestCase
             $this->controllerMock,
             $this->getExtensionConfigurationMockWithGetReturnsTrue(),
             $this->contentObjectRendererMock,
-            $this->typesProviderStub
+            $this->typeRegistryStub
         );
 
         $subject->execute($schemaManager);
@@ -418,7 +418,7 @@ class BreadcrumbListAspectTest extends UnitTestCase
             $this->controllerMock,
             $this->getExtensionConfigurationMockWithGetReturnsTrue(),
             $this->contentObjectRendererMock,
-            $this->typesProviderStub
+            $this->typeRegistryStub
         );
 
         $subject->execute($schemaManager);
@@ -436,7 +436,7 @@ class BreadcrumbListAspectTest extends UnitTestCase
     {
         $this->setUpGeneralMocks();
 
-        $this->typesProviderStub
+        $this->typeRegistryStub
             ->method('resolveModelClassFromType')
             ->with('ItemPage')
             ->willReturn(ItemPage::class);
@@ -477,7 +477,7 @@ class BreadcrumbListAspectTest extends UnitTestCase
             $this->controllerMock,
             $this->getExtensionConfigurationMockWithGetReturnsTrue(),
             $this->contentObjectRendererMock,
-            $this->typesProviderStub
+            $this->typeRegistryStub
         );
 
         $subject->execute($schemaManager);
