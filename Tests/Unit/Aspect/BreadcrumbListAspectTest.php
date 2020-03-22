@@ -437,7 +437,7 @@ class BreadcrumbListAspectTest extends UnitTestCase
         $this->setUpGeneralMocks();
 
         $this->typesProviderStub
-            ->method('resolveTypeToModel')
+            ->method('resolveModelClassFromType')
             ->with('ItemPage')
             ->willReturn(ItemPage::class);
 

@@ -82,7 +82,7 @@ final class BreadcrumbListAspect implements AspectInterface
     {
         $breadcrumbList = (new Type\BreadcrumbList());
         foreach ($rootLine as $index => $page) {
-            $givenItemTypeClass = $this->typesProvider->resolveTypeToModel($page['tx_schema_webpagetype'] ?? '');
+            $givenItemTypeClass = $this->typesProvider->resolveModelClassFromType($page['tx_schema_webpagetype'] ?? '');
             $webPageTypeClass = $givenItemTypeClass ?? Type\WebPage::class;
 
             /** @var AbstractType $itemType */

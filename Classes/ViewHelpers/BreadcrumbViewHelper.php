@@ -102,7 +102,7 @@ final class BreadcrumbViewHelper extends ViewHelper\AbstractViewHelper
             $webPageTypeClass = WebPage::class;
             if (static::hasWebPageType($arguments[static::ARGUMENT_BREADCRUMB][$i])) {
                 $givenItemTypeClass = (new TypesProvider())
-                    ->resolveTypeToModel($arguments[static::ARGUMENT_BREADCRUMB][$i]['data']['tx_schema_webpagetype'] ?? '');
+                    ->resolveModelClassFromType($arguments[static::ARGUMENT_BREADCRUMB][$i]['data']['tx_schema_webpagetype'] ?? '');
                 $webPageTypeClass = $givenItemTypeClass ?: $webPageTypeClass;
             }
 

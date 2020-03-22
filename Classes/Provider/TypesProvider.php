@@ -188,7 +188,7 @@ final class TypesProvider
     /**
      * @internal Only for internal use, not a public API!
      */
-    public function resolveTypeToModel(string $type): ?string
+    public function resolveModelClassFromType(string $type): ?string
     {
         if (empty($type)) {
             return null;

@@ -192,7 +192,7 @@ class WebPageAspectTest extends TestCase
         ];
 
         $this->typesProviderStub
-            ->method('resolveTypeToModel')
+            ->method('resolveModelClassFromType')
             ->with('WebPage')
             ->willReturn(WebPage::class);
 
@@ -228,7 +228,7 @@ class WebPageAspectTest extends TestCase
         ];
 
         $this->typesProviderStub
-            ->method('resolveTypeToModel')
+            ->method('resolveModelClassFromType')
             ->with('ItemPage')
             ->willReturn(ItemPage::class);
 
@@ -264,7 +264,7 @@ class WebPageAspectTest extends TestCase
         ];
 
         $this->typesProviderStub
-            ->method('resolveTypeToModel')
+            ->method('resolveModelClassFromType')
             ->with('WebPage')
             ->willReturn(WebPage::class);
 

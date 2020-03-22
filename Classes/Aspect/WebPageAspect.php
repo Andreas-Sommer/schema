@@ -55,7 +55,7 @@ final class WebPageAspect implements AspectInterface
 
         $type = $this->controller->page['tx_schema_webpagetype'] ?: static::DEFAULT_WEBPAGE_TYPE;
 
-        $webPageClass = $this->typesProvider->resolveTypeToModel($type);
+        $webPageClass = $this->typesProvider->resolveModelClassFromType($type);
         if ($webPageClass) {
             /** @var AbstractType $webPage */
             $webPage = new $webPageClass();

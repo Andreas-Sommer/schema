@@ -262,13 +262,13 @@ class TypesProviderTest extends TestCase
     /**
      * @test
      */
-    public function resolveTypeToModelReturnsCorrectModel(): void
+    public function resolveModelClassFromTypeReturnsCorrectModel(): void
     {
         $this->cacheFrontendMock
             ->method('has')
             ->willReturn(false);
 
-        $actual = $this->subject->resolveTypeToModel('FixtureImage');
+        $actual = $this->subject->resolveModelClassFromType('FixtureImage');
 
         self::assertSame(FixtureImage::class, $actual);
     }
@@ -276,13 +276,13 @@ class TypesProviderTest extends TestCase
     /**
      * @test
      */
-    public function resolveTypeToModelReturnsNullWhenTypeNotAvailable(): void
+    public function resolveModelClassFromTypeReturnsNullWhenTypeNotAvailable(): void
     {
         $this->cacheFrontendMock
             ->method('has')
             ->willReturn(false);
 
-        $actual = $this->subject->resolveTypeToModel('NotConfiguredType');
+        $actual = $this->subject->resolveModelClassFromType('NotConfiguredType');
 
         self::assertNull($actual);
     }
@@ -290,13 +290,13 @@ class TypesProviderTest extends TestCase
     /**
      * @test
      */
-    public function resolveTypeToModelReturnsNullWhenTypeIsEmpty(): void
+    public function resolveModelClassFromTypeReturnsNullWhenTypeIsEmpty(): void
     {
         $this->cacheFrontendMock
             ->method('has')
             ->willReturn(false);
 
-        $actual = $this->subject->resolveTypeToModel('');
+        $actual = $this->subject->resolveModelClassFromType('');
 
         self::assertNull($actual);
     }
