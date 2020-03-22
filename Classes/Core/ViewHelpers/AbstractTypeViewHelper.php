@@ -25,18 +25,18 @@ abstract class AbstractTypeViewHelper extends ViewHelper\AbstractViewHelper
 
     protected static $typeModel = '';
 
-    protected $item = [];
+    private $item = [];
 
-    protected $isMainEntityOfWebPage = false;
-    protected $specificType = '';
+    private $isMainEntityOfWebPage = false;
+    private $specificType = '';
 
-    protected $parentPropertyName = '';
+    private $parentPropertyName = '';
 
     /** @var TypeStack */
-    protected $stack;
+    private $stack;
 
     /** @var SchemaManager */
-    protected $schemaManager;
+    private $schemaManager;
 
     public function __construct(TypeStack $typeStack = null, SchemaManager $schemaManager = null)
     {
