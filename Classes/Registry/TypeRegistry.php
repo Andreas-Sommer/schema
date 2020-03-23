@@ -35,9 +35,9 @@ final class TypeRegistry implements SingletonInterface
     private const CACHE_ENTRY_IDENTIFIER_WEBPAGE_TYPES = 'webpage_types';
     private const CACHE_ENTRY_IDENTIFIER_WEBPAGEELEMENT_TYPES = 'webpageelement_types';
 
-    private static $types = [];
-    private static $webPageTypes = [];
-    private static $webPageElementTypes = [];
+    private $types = [];
+    private $webPageTypes = [];
+    private $webPageElementTypes = [];
 
     /** @var FrontendInterface */
     private $cache;
@@ -69,11 +69,11 @@ final class TypeRegistry implements SingletonInterface
 
     private function getTypesWithModels(): array
     {
-        if (empty(static::$types)) {
-            static::$types = $this->loadConfiguration();
+        if (empty($this->types)) {
+            $this->types = $this->loadConfiguration();
         }
 
-        return static::$types;
+        return $this->types;
     }
 
     private function loadConfiguration(): array
@@ -121,14 +121,14 @@ final class TypeRegistry implements SingletonInterface
      */
     public function getWebPageTypes(): array
     {
-        if (empty(static::$webPageTypes)) {
-            static::$webPageTypes = $this->loadSpecialTypes(
+        if (empty($this->webPageTypes)) {
+            $this->webPageTypes = $this->loadSpecialTypes(
                 static::CACHE_ENTRY_IDENTIFIER_WEBPAGE_TYPES,
                 WebPageTypeInterface::class
             );
         }
 
-        return static::$webPageTypes;
+        return $this->webPageTypes;
     }
 
     private function loadSpecialTypes(string $cacheEntryIdentifier, string $typeInterface): array
@@ -166,14 +166,14 @@ final class TypeRegistry implements SingletonInterface
      */
     public function getWebPageElementTypes(): array
     {
-        if (empty(static::$webPageElementTypes)) {
-            static::$webPageElementTypes = $this->loadSpecialTypes(
+        if (empty($this->webPageElementTypes)) {
+            $this->webPageElementTypes = $this->loadSpecialTypes(
                 static::CACHE_ENTRY_IDENTIFIER_WEBPAGEELEMENT_TYPES,
                 WebPageElementTypeInterface::class
             );
         }
 
-        return static::$webPageElementTypes;
+        return $this->webPageElementTypes;
     }
 
     /**
@@ -206,12 +206,12 @@ final class TypeRegistry implements SingletonInterface
             return null;
         }
 
-        if (empty(static::$types)) {
+        if (empty($this->types)) {
             $this->getTypesWithModels();
         }
 
-        if (\array_key_exists($type, static::$types)) {
-            return static::$types[$type];
+        if (\array_key_exists($type, $this->types)) {
+            return $this->types[$type];
         }
 
         return null;
