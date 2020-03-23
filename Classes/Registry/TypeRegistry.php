@@ -19,10 +19,12 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Provide names of all available types or a subset of them
+ * Provide lists of all available types or a subset of them
  *
- * The lists of types are generated from the official schema definition
- * or added in extensions via Configuration/TxSchema/TypeModels.php
+ * The lists of types shipped with the schema extension are
+ * generated from the schema.org core definitions. Additionally,
+ * more types can be registered by other extensions via
+ * Configuration/TxSchema/TypeModels.php.
  *
  * @api
  */
@@ -43,16 +45,15 @@ final class TypeRegistry implements SingletonInterface
     /** @var PackageManager */
     private $packageManager;
 
-    /**
-     * @param CacheManager|null $cacheManager For test purposes
-     * @param PackageManager|null $packageManager For test purposes
-     * @throws \TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException
-     */
-    public function __construct(CacheManager $cacheManager = null, PackageManager $packageManager = null)
+    public function __construct(FrontendInterface $cache = null, PackageManager $packageManager = null)
     {
-        $cacheManager = $cacheManager ?? GeneralUtility::makeInstance(CacheManager::class);
+        if (!$cache) {
+            $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
+            $this->cache = $cacheManager->getCache(static::CACHE_IDENTIFIER);
+        } else {
+            $this->cache = $cache;
+        }
 
-        $this->cache = $cacheManager->getCache(static::CACHE_IDENTIFIER);
         $this->packageManager = $packageManager ?? GeneralUtility::makeInstance(PackageManager::class);
     }
 

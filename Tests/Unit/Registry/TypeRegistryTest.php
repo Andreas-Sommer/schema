@@ -5,10 +5,10 @@ namespace Brotkrueml\Schema\Tests\Unit\Registry;
 
 use Brotkrueml\Schema\Registry\TypeRegistry;
 use Brotkrueml\Schema\Tests\Fixtures\Model\Type\FixtureImage;
+use Brotkrueml\Schema\Tests\Fixtures\Model\Type\VideoGallery;
+use Brotkrueml\Schema\Tests\Fixtures\Model\Type\WebPage;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Package\PackageInterface;
 use TYPO3\CMS\Core\Package\PackageManager;
@@ -21,18 +21,12 @@ class TypeRegistryTest extends TestCase
     /** @var TypeRegistry */
     private $subject;
 
-    /** @var MockObject|FrontendInterface */
-    private $cacheFrontendMock;
+    /** @var MockObject|PhpFrontend */
+    private $cacheMock;
 
     protected function setUp(): void
     {
-        $this->cacheFrontendMock = $this->createMock(PhpFrontend::class);
-
-        $cacheStub = $this->createStub(CacheManager::class);
-        $cacheStub
-            ->method('getCache')
-            ->with('tx_schema_core')
-            ->willReturn($this->cacheFrontendMock);
+        $this->cacheMock = $this->createMock(PhpFrontend::class);
 
         $packageStub1 = $this->createStub(PackageInterface::class);
         $packageStub1
@@ -49,7 +43,7 @@ class TypeRegistryTest extends TestCase
             ->method('getActivePackages')
             ->willReturn([$packageStub1, $packageStub2]);
 
-        $this->subject = new TypeRegistry($cacheStub, $packageManagerStub);
+        $this->subject = new TypeRegistry($this->cacheMock, $packageManagerStub);
     }
 
     /**
@@ -57,23 +51,23 @@ class TypeRegistryTest extends TestCase
      */
     public function getTypesReturnsTypesFromCacheCorrectly(): void
     {
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->expects(self::once())
             ->method('has')
             ->with('types')
             ->willReturn(true);
 
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->expects(self::once())
             ->method('require')
             ->with('types')
             ->willReturn([
-                'FixtureImage' => \Brotkrueml\Schema\Tests\Fixtures\Model\Type\FixtureImage::class,
-                'VideoGallery' => \Brotkrueml\Schema\Tests\Fixtures\Model\Type\VideoGallery::class,
-                'WebPage' => \Brotkrueml\Schema\Tests\Fixtures\Model\Type\WebPage::class,
+                'FixtureImage' => FixtureImage::class,
+                'VideoGallery' => VideoGallery::class,
+                'WebPage' => WebPage::class,
             ]);
 
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->expects(self::never())
             ->method('set');
 
@@ -87,17 +81,17 @@ class TypeRegistryTest extends TestCase
      */
     public function getTypesReturnsTypesWithReadingConfiguration(): void
     {
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->expects(self::once())
             ->method('has')
             ->with('types')
             ->willReturn(false);
 
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->expects(self::never())
             ->method('require');
 
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->expects(self::once())
             ->method('set')
             ->with(
@@ -122,7 +116,7 @@ class TypeRegistryTest extends TestCase
      */
     public function getTypesReturnsTypesFromClassVariableWhenCalledTheSecondTime(): void
     {
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->expects(self::once())
             ->method('has')
             ->with('types')
@@ -139,13 +133,13 @@ class TypeRegistryTest extends TestCase
      */
     public function getWebPageTypesReturnsTypesFromCacheCorrectly(): void
     {
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->expects(self::once())
             ->method('has')
             ->with('webpage_types')
             ->willReturn(true);
 
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->expects(self::once())
             ->method('require')
             ->with('webpage_types')
@@ -164,7 +158,7 @@ class TypeRegistryTest extends TestCase
      */
     public function getWebPageTypesLoadsTypesNotFromCache(): void
     {
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->method('has')
             ->willReturn(false);
 
@@ -178,7 +172,7 @@ class TypeRegistryTest extends TestCase
      */
     public function getWebPageTypesReturnsTypesFromClassVariableWhenCalledTheSecondTime(): void
     {
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->expects(self::exactly(2)) // on webpage_types and types once
             ->method('has')
             ->willReturn(false);
@@ -194,13 +188,13 @@ class TypeRegistryTest extends TestCase
      */
     public function getWebPageElementTypesReturnsTypesFromCacheCorrectly(): void
     {
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->expects(self::once())
             ->method('has')
             ->with('webpageelement_types')
             ->willReturn(true);
 
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->expects(self::once())
             ->method('require')
             ->with('webpageelement_types')
@@ -219,7 +213,7 @@ class TypeRegistryTest extends TestCase
      */
     public function getWebPageElementTypesLoadsTypesNotFromCache(): void
     {
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->method('has')
             ->willReturn(false);
 
@@ -233,7 +227,7 @@ class TypeRegistryTest extends TestCase
      */
     public function getWebPageElementTypesReturnsTypesFromClassVariableWhenCalledTheSecondTime(): void
     {
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->expects(self::exactly(2)) // on webpageelement_types and types once
             ->method('has')
             ->willReturn(false);
@@ -249,7 +243,7 @@ class TypeRegistryTest extends TestCase
      */
     public function getContentTypesReturnsOnlyTheContentTypes(): void
     {
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->expects(self::exactly(3)) // on webpage_types, webpageelement_types and types once
             ->method('has')
             ->willReturn(false);
@@ -264,7 +258,7 @@ class TypeRegistryTest extends TestCase
      */
     public function resolveModelClassFromTypeReturnsCorrectModel(): void
     {
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->method('has')
             ->willReturn(false);
 
@@ -278,7 +272,7 @@ class TypeRegistryTest extends TestCase
      */
     public function resolveModelClassFromTypeReturnsNullWhenTypeNotAvailable(): void
     {
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->method('has')
             ->willReturn(false);
 
@@ -292,7 +286,7 @@ class TypeRegistryTest extends TestCase
      */
     public function resolveModelClassFromTypeReturnsNullWhenTypeIsEmpty(): void
     {
-        $this->cacheFrontendMock
+        $this->cacheMock
             ->method('has')
             ->willReturn(false);
 
