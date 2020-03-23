@@ -227,3 +227,6 @@ Now you can use the view helper in a Fluid template (for example, when using the
             url="https://example.com/looney-tunes-webinar-12345/register"
          />
    </schema:type.event>
+
+Every property name defined in the type model class is available as argument
+in the view helper.
