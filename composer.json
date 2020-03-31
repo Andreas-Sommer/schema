@@ -21,18 +21,6 @@
         "ext-json": "*",
         "typo3/cms-core": "^8.7 || ^9.5 || ^10.0"
     },
-    "require-dev": {
-        "clue/graph": "^0.9",
-        "dg/bypass-finals": "^1.1",
-        "friendsofphp/php-cs-fixer": "^2.16",
-        "infection/infection": "^0.13",
-        "mikey179/vfsstream": "^1.6",
-        "php-coveralls/php-coveralls": "^2.2",
-        "phpstan/phpstan": "^0.11",
-        "phpunit/phpunit": "^8.5",
-        "twig/twig": "^3.0",
-        "typo3/testing-framework": "^4.13 || ^5.0 || ^6.2"
-    },
     "conflict": {
         "brotkrueml/sdbreadcrumb": "*"
     },
@@ -41,28 +29,9 @@
             "Brotkrueml\\Schema\\": "Classes/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Brotkrueml\\Schema\\Generator\\": "Generator/Classes/",
-            "Brotkrueml\\Schema\\Tests\\": "Tests/"
-        }
-    },
-    "config": {
-        "sort-packages": true,
-        "vendor-dir": ".Build/vendor",
-        "bin-dir": ".Build/bin"
-    },
     "extra": {
         "branch-alias": {
             "dev-8.7": "8.7.x-dev"
-        },
-        "typo3/cms": {
-            "app-dir": ".Build",
-            "web-dir": ".Build/web"
         }
-    },
-    "scripts": {
-        "fix-cs": ".Build/bin/php-cs-fixer fix",
-        "zip": "grep -Po \"(?<='version' => ')([0-9]+\\.[0-9]+\\.[0-9]+)\" ext_emconf.php | xargs -I {version} sh -c 'mkdir -p ../zip; git archive -v -o \"../zip/${PWD##*/}_{version}.zip\" v{version}'"
     }
 }
